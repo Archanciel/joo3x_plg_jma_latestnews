@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="jma_latestnews_js" addfieldpath="/plugins/emailalerts/jma_latestnews_js/jma_latestnews_js/element/joomla16">
+		<fieldset name="legacy" >
+			
+			<field name="catid" type="jmacategoriesusers" default="1" label="LBL_CATEGORY_LN_JS" element="jma_latestnews_js" multiple="multiple" description="DESC_CATEGORY_LN_JS" key_field='id' value_field='title' />
+			
+			<field name="count" type="text" default="5" label="LBL_COUNT_LN_JS" class="required validate-numeric inputbox" description="DESC_COUNT_LN_JS" />
+
+			<field name="user_id" type="list" default="0" label="LBL_AUTHORS_LN_JS" description="DESC_AUTHORS_LN_JS">
+				<option value="0">AUTHOR_ANY_LN_JS</option>
+				<option value="by_me">AUTHOR_ADD_MOD_ME_LN_JS</option>
+				<option value="not_me">AUTHOR_ADD_MOD_NOT_ME_LN_JS</option>
+			</field>
+			
+		</fieldset>
+	</fields>
+</form>

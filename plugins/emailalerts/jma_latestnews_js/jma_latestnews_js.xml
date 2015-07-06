@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.0" type="plugin" group="emailalerts" method="upgrade">
+	<name>J!MailAlerts - Latest News</name>
+	<author>TechJoomla</author>
+	<authorEmail>extensions@techjoomla.com</authorEmail>
+	<authorUrl>www.techjoomla.com</authorUrl>
+	<copyright>Copyright(C)2009-13 TechJoomla</copyright>
+	<creationDate>6th Jun 2013</creationDate>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<version>2.5</version>
+	<description>
+		This plugin fetches latest news i.e. articles.
+		FOLLOW these steps to SET Plugin Parameters=&gt;
+		1.Set Enabled = Yes, click on apply. 2.Select sections, click on apply. 3.Select categories, click on apply. 
+	</description>
+ 	<files>
+    	<filename plugin="jma_latestnews_js">jma_latestnews_js.php</filename>
+		<folder>jma_latestnews_js</folder>
+		<filename>index.html</filename>
+	</files>
+	<languages folder="language/en-GB">
+        <language tag="en-GB">en-GB.plg_emailalerts_jma_latestnews_js.ini</language>
+    </languages>
+  
+
+	<!-- parameters for Joomla 1.6 -->
+	<config>
+		<fields name="params" addfieldpath="/plugins/emailalerts/jma_latestnews_js/jma_latestnews_js/element/joomla16">
+			<fieldset name="basic" label="Plugin Parameters">
+
+				<field name="plugintitle" type="text" default="Latest News" label="LBL_PLUGIN_TITLE_LN_JS" description="DESC_PLUGIN_TITLE_LN_JS" />
+
+				<field name="category" type="category" default="1" label="LBL_ALLOWED_CATEGORY_LN_JS" element="jma_latestnews_js" multiple="multiple" description="DESC_ALLOWED_CATEGORY_LN_JS" key_field='id' value_field='title' extension="com_content"/>
+
+				<field name="show_front" type="radio" default="1" label="LBL_FRONT_ITEMS_LN_JS" description="DESC_FRONT_ITEMS_LN_JS">
+					<option value="1">SHOW_LN_JS</option>
+					<option value="0">HIDE_LN_JS</option>
+				</field>
+
+				<field name="show_category" type="radio" default="1" label="LBL_SHOWCATEGORY_LN_JS" description="DESC_SHOWCATEGORY_LN_JS">
+					<option value="1">SHOW_LN_JS</option>
+					<option value="0">HIDE_LN_JS</option>
+				</field>
+
+				<field name="show_author" type="radio" default="1" label="LBL_SHOWAUTHOR_LN_JS" description="DESC_SHOWAUTHOR_LN_JS">
+					<option value="1">SHOW_LN_JS</option>
+					<option value="0">HIDE_LN_JS</option>
+				</field>
+				
+				<field name="show_author_alias" type="radio" default="1" label="LBL_SHOWAUTHOR_ALIAS_LN_JS" description="DESC_SHOWAUTHOR_ALIAS_LN_JS">
+					<option value="1">SHOW_LN_JS</option>
+					<option value="0">HIDE_LN_JS</option>
+				</field>
+
+				<field name="show_date" type="radio" default="1" label="LBL_SHOWDATE_LN_JS" description="DESC_SHOWDATE_LN_JS">
+					<option value="1">SHOW_LN_JS</option>
+					<option value="0">HIDE_LN_JS</option>
+				</field>
+
+				<field name="show_introtext" type="radio" default="1" label="LBL_INTROTEXT_LN_JS" description="DESC_INTROTEXT_LN_JS">
+					<option value="1">SHOW_LN_JS</option>
+					<option value="0">HIDE_LN_JS</option>
+				</field>
+
+				<field name="introtext_count" type="text" default="200" label="LBL_INTROTEXT_COUNT_LN_JS" class="required validate-numeric inputbox" description="DESC_INTROTEXT_COUNT_LN_JS" />
+
+				<field name="ordering" type="list" default="create_dsc" label="LBL_ORDER_LN_JS" description="DESC_ORDER_LN_JS">
+					<option value="c_dsc">RECENT_ADDED_LN_JS</option>
+					<option value="m_dsc">RECENT_MODIFIED_LN_JS</option>
+				</field>
+			
+			</fieldset>
+		  
+			<fieldset name="legacy" label="Legacy Parameters" addfieldpath="/plugins/emailalerts/jma_latestnews_js/jma_latestnews_js/element/joomla16">
+		
+				<field name="catid" type="jmacategoriesusers" default="1" label="LBL_CATEGORY_LN_JS" element="jma_latestnews_js" multiple="multiple" description="DESC_CATEGORY_LN_JS" key_field='id' value_field='title' />
+			
+				<field name="count" type="text" default="5" label="LBL_COUNT_LN_JS" class="required validate-numeric inputbox" description="DESC_COUNT_LN_JS" />
+				
+				<field name="user_id" type="list" default="0" label="LBL_AUTHORS_LN_JS" description="DESC_AUTHORS_LN_JS">
+					<option value="0">AUTHOR_ANY_LN_JS</option>
+					<option value="by_me">AUTHOR_ADD_MOD_ME_LN_JS</option>
+					<option value="not_me">AUTHOR_ADD_MOD_NOT_ME_LN_JS</option>
+				</field>
+	
+			</fieldset>
+		</fields>
+	</config> 
+ 
+</extension>
