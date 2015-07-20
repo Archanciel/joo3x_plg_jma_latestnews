@@ -91,10 +91,19 @@ $user = JFactory::getUser();
 <!--div for registration of guest user.-->
 <div class="<?php echo JMAILALERTS_WRAPPER_CLASS;?>" id="jmailalerts-emails">
 	<div class="col100" id="e-mail_alert">
+		<!-- JPS: fixed handling of page header / page title -->
 		<div class="componentheading page-header">
-			<h2><?php echo $this->page_title;?></h2>
+			<?php 
+			$app = JFactory::getApplication();
+			$appParam = $app->getParams();
+			if ($appParam->get('show_page_heading')) :
+			?>
+				<h2><?php echo $this->escape($appParam->get('page_heading'));?></h2>
+			<?php else : ?>
+				<h2><?php echo $this->escape($appParam->get('page_title')); ?></h2>
+			<?php endif; ?>
 		</div>
-		<form action="" class="form-validate form-horizontal" method="POST" id="adminform" name="adminform" ENCTYPE="multipart/form-data">
+			<form action="" class="form-validate form-horizontal" method="POST" id="adminform" name="adminform" ENCTYPE="multipart/form-data">
 			<?php
 			// if enable guest user registration then show name and email field.
 			if (!$user->id && $params->get('guest_subcription')==1)
@@ -157,19 +166,16 @@ $user = JFactory::getUser();
 					return false;
 				}
 
-			// take Component parameter as no config file present now.
-			if($params->get('intro_msg') != '')
-			{
 				?>
 				<div class="jma_email_intro">
 					<div class=" well">
 						<span class="alert_preferences_intro_msg" style="font-size:14px;font-weight:bold;">
-							<?php echo $params->get('intro_msg');?>
+							<?php echo JText::_('INTRO_MSG'); // $params->get('intro_msg'); must not come from the component parms defined in the jmailalert.xml file !!! ?>
 						</span>
 					</div>
 				</div>
+				<br>
 				<?php
-			}
 
 			$disp_none = " ";
 

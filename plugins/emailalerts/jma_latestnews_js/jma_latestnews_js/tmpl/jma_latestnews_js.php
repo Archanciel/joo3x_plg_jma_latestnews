@@ -6,6 +6,13 @@
  * @link     http://www.techjoomla.com
  */
 defined('_JEXEC') or die('Restricted access');
+$isauthordisplayed = $plugin_params->get('show_author',0);
+
+if ($isauthordisplayed) {
+	$colspan='1';
+} else {
+	$colspan='2';
+}
 ?>
 <h2 class="subTitle">
 <?php 
@@ -15,19 +22,23 @@ echo $plugin_params->get('plugintitle');
 <table class= "jma_latestnewsjs product-table">
 <tr>
 	<td class="jma_latestnewsjs_th">
-		<?php //echo JText::_('TITLE_LN_JS'); ?>
+		<?php echo JText::_('TITLE_LN_JS'); ?>
 	</td >
 	<?php 
-	if($plugin_params->get('show_author'))
+	if($isauthordisplayed)
 	{
 	?>
 		<td class="jma_latestnewsjs_th">
 			<?php echo JText::_('AUTHOR_LN_JS'); ?>
 		</td>	
-	<?php
-	}
-	?>
-
+		<?php 
+		} else {
+		?>
+			<td class="jma_latestnewsjs_th" />
+		<?php 
+		}
+		?>
+		
 	<?php 
 	if($plugin_params->get('show_date'))
 	{
@@ -53,26 +64,27 @@ echo $plugin_params->get('plugintitle');
 					</td>
 					
 				   <?php 
-				   if($plugin_params->get('show_author'))
+				   if($isauthordisplayed)
 				   {
 				   ?>
 					   <td class="jma_latestnewsjs_td_20">
 							<?php echo $row->author; ?> 
 						</td>
-				   <?php
+				   <?php 
+				   } else {
+				   ?>
+						<td class="jma_latestnewsjs_article_line_s" />
+				   <?php 
 				   }
 				   ?>
-					
+											
 				   <?php 
 				   if($plugin_params->get('show_date'))
 				   {
 				   ?>
 					   <td class="jma_latestnewsjs_td_20">
 							<?php 
-							if(JVERSION<'1.6.0')
-								echo JHTML::date($row->date,"%Y-%m-%d"); 
-							else
-								echo JHTML::date($row->date,"Y-m-d");
+								echo JHTML::date($row->date,"d-m-Y");
 							?> 
 						</td>
 				   <?php
@@ -85,7 +97,7 @@ echo $plugin_params->get('plugintitle');
 			   {
 			   ?>
 				   <tr>
-						<td colspan="3" class="jma_justify">
+						<td class="jma_introtext" colspan=<?php echo $colspan; ?>>
 							<?php echo $row->intro; ?>
 						</td>
 				   </tr>
@@ -117,26 +129,27 @@ echo $plugin_params->get('plugintitle');
 						<a href="<?php echo $row->link;?>"><?php echo $row->title;?></a>
 					</td>
 				   <?php 
-				   if($plugin_params->get('show_author'))
+				   if($isauthordisplayed)
 				   {
 				   ?>
 					   <td class="jma_latestnewsjs_td_20">
 							<?php echo $row->author; ?> 
 						</td>
-				   <?php
+				   <?php 
+				   } else {
+				   ?>
+						<td class="jma_latestnewsjs_article_line_s" />
+				   <?php 
 				   }
 				   ?>
-					
+											
 				   <?php 
 				   if($plugin_params->get('show_date'))
 				   {
 				   ?>
 					   <td class="jma_latestnewsjs_td_20">
 							<?php 
-							if(JVERSION<'1.6.0')
-								echo JHTML::date($row->date,"%Y-%m-%d"); 
-							else
-								echo JHTML::date($row->date,"Y-m-d");
+								echo JHTML::date($row->date,"d-m-Y");
 							?> 
 						</td>
 				   <?php
@@ -148,7 +161,7 @@ echo $plugin_params->get('plugintitle');
 			   {
 			   ?>
 				   <tr>
-						<td colspan="3" class="jma_justify">
+						<td class="jma_introtext" colspan=<?php echo $colspan; ?>>
 							<?php echo $row->intro; ?>
 						</td>
 				   </tr>

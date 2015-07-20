@@ -109,8 +109,11 @@ for ($s = 0; $s < count($qry_concat); $s++) //for loop for alert types
 												
 												if ($check_hidden_plugin)
 												    $checked = "checked";
+												// JPS the div visibility is set to hidden to avoid having two
+												// dupliclate alert subscription checkbox on the form. Simply removing
+												// this php snippet breaks the saving of the subscriotion prefs !
 												echo '
-												<div class="jma_alert" >
+												<div class="jma_alert" style="visibility: hidden;">
 													<input type="checkbox" name="ch' . $altid[$s] . '[]" value="' . $single_plugin_name->element . '_' . $altid[$s] . '" onclick="divhide(this);" ' . $checked . '/>
 													<b>' . $plugtitle . '</b>
 												</div>';

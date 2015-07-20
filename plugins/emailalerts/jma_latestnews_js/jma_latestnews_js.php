@@ -101,28 +101,23 @@ class plgEmailalertsjma_latestnews_js extends JPlugin
 		$secid='';
 		
 		$aid		= $user->get('aid');
-		if(JVERSION < '1.6.0')
-		{
-			$secid		= trim( $userparam['secid'] );
-			$acl=JFactory::getACL() ;
-			$grp=$acl->getAroGroup($id);
-			if($acl->is_group_child_of($grp->name,'Registered')||$acl->is_group_child_of($grp->name,'Public Backend')){
-				$aid = 2 ;
-			}else{
-				$aid = 1 ;
-			}
-		}
 		
 		//get plugin parameters(not shown in frontend) 
 		$ordering = $this->params->get('ordering');
 		$show_front = $this->params->get('show_front',0);
 
-		$introtext_count =(int) $this->params->get('introtext_count',200);
+		$introtext_count =(int) $this->params->get('introtext_count',400);
 		$show_introtext =(int) $this->params->get('show_introtext',0);
+		$is_exerptsource_introtext = 0;	// 0 means metadesc, 1 means introtext !
+		
+		if ($show_introtext) {
+			$is_exerptsource_introtext = (int) $this->params->get('exerpt_source',0);
+		}
+		
 		$show_date =(int) $this->params->get('show_date',0);
 		$show_author =(int) $this->params->get('show_author',0);
 		$show_author_alias =(int) $this->params->get('show_author_alias',0);
-		$show_category =(int) $this->params->get('show_author',0);
+		$show_category =(int) $this->params->get('show_category',0);
 		
 		$contentConfig = JComponentHelper::getParams( 'com_content' );
 		$access		= !$contentConfig->get('show_noauth');
@@ -166,7 +161,9 @@ class plgEmailalertsjma_latestnews_js extends JPlugin
 		{
 			$ids = explode( ',', $catid );
 			JArrayHelper::toInteger( $ids );
-			$catCondition = ' AND (cc.id=' . implode( ' OR cc.id=', $ids ) . ')';
+			$catCondition = ' AND (cc.parent_id=' . implode( ' OR cc.parent_id=', $ids ) . ')';
+// works identically as line above !
+//			$catCondition = ' AND (cc2.id=' . implode( ' OR cc2.id=', $ids ) . ')';
 		}
 		
 		//section filter
@@ -184,41 +181,22 @@ class plgEmailalertsjma_latestnews_js extends JPlugin
 		}
 		
 		//get content items/articles
-		if(JVERSION < '1.6.0')
-		{
-			$query = 'SELECT '.$intro.' a.id,a.catid,a.title,a.created,a.created_by_alias,a.sectionid,u.name,u.username,cc.access,cc.title as category, ' .
-			' CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug,'.
-			' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'.
-			' FROM #__content AS a ' .
-			' LEFT JOIN #__users AS u ON u.id=a.created_by '.
-			($show_front == '0' ? ' LEFT JOIN #__content_frontpage AS f ON f.content_id = a.id' : '') .
-			' INNER JOIN #__categories AS cc ON cc.id = a.catid' .
-			' INNER JOIN #__sections AS s ON s.id = a.sectionid' .
-			' WHERE '. $where .' AND s.id > 0' .
-			($access ? ' AND a.access <= ' .(int) $aid. ' AND cc.access <= ' .(int) $aid. ' AND s.access <= ' .(int) $aid : '').
-			($catid ? $catCondition : '').
-			($secid ? $secCondition : '').
-			($show_front == '0' ? ' AND f.content_id IS NULL ' : '').
-			' AND s.published = 1' .
-			' AND cc.published = 1';
-		}
-		else
-		{
-			$groups	= implode(',', $user->getAuthorisedViewLevels());
-			$checkacc=	'a.access IN ('.$groups.')';
-			$query = 'SELECT '.$intro.' a.id,a.catid,a.title,a.created,a.created_by_alias,u.name,u.username,cc.access,cc.title as category,'.
-			' CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug,'.
-			' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'.
-			' FROM #__content AS a' .
-			' LEFT JOIN #__users AS u ON u.id=a.created_by '.
-			($show_front == '0' ? ' LEFT JOIN #__content_frontpage AS f ON f.content_id = a.id' : '') .
-			' INNER JOIN #__categories AS cc ON cc.id = a.catid' .
-			' WHERE '. $where .
-			($access ? ' AND '.$checkacc:'').
-			($catid ? $catCondition : '').
-			($show_front == '0' ? ' AND f.content_id IS NULL ' : '').
-			' AND cc.published = 1';
-		}
+		$groups	= implode(',', $user->getAuthorisedViewLevels());
+		$checkacc=	'a.access IN ('.$groups.')';
+		$query = 'SELECT '.$intro.' a.id,a.catid,a.title,a.created,a.created_by_alias,a.metadesc,u.name,u.username,cc.access,cc2.title as category,'.
+		' CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug,'.
+		' CASE WHEN CHAR_LENGTH(cc.alias) THEN CONCAT_WS(":", cc.id, cc.alias) ELSE cc.id END as catslug'.
+		' FROM #__content AS a' .
+		' LEFT JOIN #__users AS u ON u.id=a.created_by '.
+		($show_front == '0' ? ' LEFT JOIN #__content_frontpage AS f ON f.content_id = a.id' : '') .
+		' INNER JOIN #__categories AS cc ON cc.id = a.catid' .
+		' INNER JOIN #__categories AS cc2 ON cc2.id = cc.parent_id' .
+		' WHERE '. $where .
+		($access ? ' AND '.$checkacc:'').
+		($catid ? $catCondition : '').
+		($show_front == '0' ? ' AND f.content_id IS NULL ' : '').
+		' AND cc.published = 1';
+
 		//get only fresh content
 		if($fetch_only_latest)
 		{
@@ -256,9 +234,17 @@ class plgEmailalertsjma_latestnews_js extends JPlugin
 					$lists[$i]->date=htmlspecialchars($row->created);
 					$lists[$i]->catid=htmlspecialchars($row->catid);
 					$lists[$i]->category=htmlspecialchars($row->category);
+
 					if($show_introtext){
-						$lists[$i]->intro = substr( strip_tags($row->intro) , 0, $introtext_count )." ...";
+						$strippedIntro = $this->stripFLikeTag($row->intro);
+						$metadesc = $row->metadesc;
+						if ($is_exerptsource_introtext || empty($metadesc)) {
+							$lists[$i]->intro = $this->extractWordsUpToSize($strippedIntro, $introtext_count);
+						} else {
+							$lists[$i]->intro = $this->buildIntrotextFromMetadesc($strippedIntro,$metadesc);
+						}
 					}
+					
 					$i++;
 				}
 			}
@@ -279,9 +265,17 @@ class plgEmailalertsjma_latestnews_js extends JPlugin
 					$lists[$i]->date=htmlspecialchars($row->created);
 					$lists[$i]->catid=htmlspecialchars($row->catid);
 					$lists[$i]->category=htmlspecialchars($row->category);
+				
 					if($show_introtext){
-						$lists[$i]->intro = substr( strip_tags($row->intro) , 0, $introtext_count )." ...";
+						$strippedIntro = $this->stripFLikeTag($row->intro);
+						$metadesc = $row->metadesc;
+						if ($is_exerptsource_introtext || empty($metadesc)) {
+							$lists[$i]->intro = $this->extractWordsUpToSize($strippedIntro, $introtext_count);
+						} else {
+							$lists[$i]->intro = $this->buildIntrotextFromMetadesc($strippedIntro,$metadesc);
+						}
 					}
+					
 					$i++;
 				}
 			}
@@ -293,4 +287,73 @@ class plgEmailalertsjma_latestnews_js extends JPlugin
 		}
 	}//getList() ends
 
+
+	/**
+	 * Return $size chars from the passed $text, but so that the returned
+	 * text only contains whole words. The length of the returned text is
+	 * thus <= $size.
+	 *
+	 * @param string $text
+	 * @param int $size
+	 *
+	 * @return string of length <= $size, but containing only whole words
+	 */
+	private function extractWordsUpToSize($text, $size) {
+		if ($size == 0) {
+			return '';
+		}
+		 
+		$partialWord = 1;
+	
+		if ($size >= strlen ( $text ) || strcmp ( substr ( $text, $size, 1 ), " " ) == 0) {
+			$partialWord = 0;
+		}
+	
+		$subsStr = substr ( $text, 0, $size );
+		$words = explode ( " ", $subsStr );
+		$fullWords = array_slice ( $words, 0, count ( $words ) - $partialWord );
+	
+		$fullWordString = implode ( " ", $fullWords );
+	
+		return trim ( $fullWordString, "\x20\"" ).' ...';
+	}
+	
+	/**
+	 * Extracts the Année and Durée component from the passed introtext and build an excerpt
+	 * containing those two elements + the passed metadesc.
+	 *
+	 * @param string $introtext
+	 * @param string $metadesc
+	 *
+	 * @return built exerpt string
+	 */
+	private function buildIntrotextFromMetadesc($introtext, $metadesc) {
+		$exerpt = htmlspecialchars($metadesc);
+		 
+		// WARNINGS:
+		//			1/ the class definition [a-zA-Z0-9\'’ ] used below include two
+		//			   types of apostrophy, ascii 39 and ascii 146 !
+		//			2/ for the dot to match newline chars (ascii 13 and 10), the
+		//			   s flag must be used !
+		$pattern = "#<p>(Année: [0-9]{4})</p>.*<p>(Durée: [a-zA-Z0-9\'’ ]+)<#s";
+		 
+		preg_match($pattern, $introtext, $matches);
+		$annee = $matches[1];
+		$duree = $matches[2];
+		$exerpt = '<p>' . $annee . '</p>' . $duree . '</p><p>' . $exerpt;
+	
+		return $exerpt;
+	}
+	
+	/**
+	 * Removes the {flike} Facebook plugin tag from the article introtext.
+	 * 
+	 * @param unknown $introText
+	 * @return stripped introtext
+	 */
+	private function stripFLikeTag($introText) {
+		$strippedIntroText = str_replace('<p>{flike}</p>', '', $introText);
+		
+		return $strippedIntroText;
+	}
 }//class plgEmailalertsjma_latestnews_js  ends

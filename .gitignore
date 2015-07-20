@@ -30,3 +30,6 @@ README.txt
 robots.txt
 robots.txt.dist
 web.config.txt
+/log/error.php
+/language/fr-FR/fr-FR.com_jmailalerts.ini
+/components/com_jmailalerts/views/emails/tmpl/default.php

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.0" type="plugin" group="emailalerts" method="upgrade">
 	<name>J!MailAlerts - Latest News</name>
-	<author>TechJoomla</author>
+	<author>TechJoomla, modified by plusconscient.net</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>www.techjoomla.com</authorUrl>
 	<copyright>Copyright(C)2009-13 TechJoomla</copyright>
@@ -9,7 +9,7 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<version>2.5</version>
 	<description>
-		This plugin fetches latest news i.e. articles.
+		This plugin fetches latest news i.e. articles. It has been customized to fullfil the needs of plusconscient.net
 		FOLLOW these steps to SET Plugin Parameters=&gt;
 		1.Set Enabled = Yes, click on apply. 2.Select sections, click on apply. 3.Select categories, click on apply. 
 	</description>
@@ -62,7 +62,12 @@
 					<option value="0">HIDE_LN_JS</option>
 				</field>
 
-				<field name="introtext_count" type="text" default="200" label="LBL_INTROTEXT_COUNT_LN_JS" class="required validate-numeric inputbox" description="DESC_INTROTEXT_COUNT_LN_JS" />
+				<field name="introtext_count" type="text" default="400" label="LBL_INTROTEXT_COUNT_LN_JS" class="required validate-numeric inputbox" description="DESC_INTROTEXT_COUNT_LN_JS" />
+
+				<field name="exerpt_source" type="radio" default="0" label="LBL_EXERPT_SOURCE_LN_JS" description="DESC_EXERPT_SOURCE_LN_JS">
+					<option value="0">METADESC_LN_JS</option>
+					<option value="1">INTROTEXT_LN_JS</option>
+				</field>
 
 				<field name="ordering" type="list" default="create_dsc" label="LBL_ORDER_LN_JS" description="DESC_ORDER_LN_JS">
 					<option value="c_dsc">RECENT_ADDED_LN_JS</option>
