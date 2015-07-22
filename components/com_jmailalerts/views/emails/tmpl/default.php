@@ -96,11 +96,14 @@ $user = JFactory::getUser();
 			<?php 
 			$app = JFactory::getApplication();
 			$appParam = $app->getParams();
-			if ($appParam->get('show_page_heading')) :
-			?>
-				<h2><?php echo $this->escape($appParam->get('page_heading'));?></h2>
-			<?php else : ?>
-				<h2><?php echo $this->escape($appParam->get('page_title')); ?></h2>
+			if ($appParam->get('show_page_heading')) : ?>
+			<h1 class="page-title">
+				<?php if ($this->escape($appParam->get('page_heading'))) :?>
+					<?php echo $this->escape($appParam->get('page_heading')); ?>
+				<?php else : ?>
+					<?php echo $this->escape($appParam->get('page_title')); ?>
+				<?php endif; ?>
+			</h1>
 			<?php endif; ?>
 		</div>
 			<form action="" class="form-validate form-horizontal" method="POST" id="adminform" name="adminform" ENCTYPE="multipart/form-data">
